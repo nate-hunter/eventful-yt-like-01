@@ -11,6 +11,7 @@ const getAuthRoutes = () => {
 
   router.post('/google-login', googleLogin);
   router.get('/me', protect, validateMe);
+  router.get('/signout', signout);
 
   return router;
 }
@@ -48,6 +49,11 @@ const validateMe = async (req, res) => {
   res.status(200).json({ user: req.user })
 }
 
-const signout = (req, res) => { }
+const signout = (req, res) => {
+  res.clearCookie('token');
+  res.status(200).json({
+    message: 'Current user logged out.'
+  })
+}
 
 export { getAuthRoutes };
