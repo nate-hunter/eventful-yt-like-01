@@ -6,7 +6,7 @@ const prisma = new PrismaClient();
 
 export const getAuthUser = async (req, res, next) => { }
 
-export const protect = async (req, res, next) => {
+export const protectRoute = async (req, res, next) => {
     if (!req.headers.authorization) {
         return next({
             message: 'Please log in to access this route.',

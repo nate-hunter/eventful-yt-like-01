@@ -1,7 +1,7 @@
 import { PrismaClient } from "@prisma/client";
 import express from "express";
 import jwt from "jsonwebtoken";
-import { protect } from "../middleware/authorization";
+import { protectRoute } from "../middleware/authorization";
 
 
 const prisma = new PrismaClient();
@@ -10,7 +10,7 @@ const getAuthRoutes = () => {
   const router = express.Router();
 
   router.post('/google-login', googleLogin);
-  router.get('/me', protect, validateMe);
+  router.get('/me', protectRoute, validateMe);
   router.get('/signout', signout);
 
   return router;

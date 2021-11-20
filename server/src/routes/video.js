@@ -1,5 +1,7 @@
 import { PrismaClient } from "@prisma/client";
 import express from "express";
+import { protectRoute } from "../middleware/authorization";
+
 
 
 const prisma = new PrismaClient();
@@ -10,6 +12,7 @@ const getVideoRoutes = () => {
   router.get('/', getRecommendedVideos);
   router.get('/trending', getTrendingVideos);
   router.get('/search', searchVideos);
+  router.post('/', protectRoute, addVideo);
 
   return router;
 }
