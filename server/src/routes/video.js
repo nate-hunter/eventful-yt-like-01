@@ -13,6 +13,7 @@ const getVideoRoutes = () => {
   router.get('/trending', getTrendingVideos);
   router.get('/search', searchVideos);
   router.post('/', protectRoute, addVideo);
+  router.post('/:videoId/comment', protectRoute, addComment);
 
   return router;
 }
@@ -148,6 +149,42 @@ const addVideo = async (req, res) => {
 
   res.status(200).json({ video: addedVideo })
 }
+
+const addComment = async (req, res, next) => {
+  const videoId = req.params.videoId
+  const video = await prisma.video.findUnique({
+    where: {
+      id: videoId,
+    }
+  })
+
+  if (!video) {
+    return next({
+      message: `Video with ID '${videoId}' not found.`,
+      statusCode: 404,
+    })
+  }
+
+  const comment = await prisma.comment.create({
+    data: {
+      text: req.body.text,
+      user: {
+        connect: {
+          id: req.user.id,
+        }
+      },
+      video: {
+        connect: {
+          id: videoId,
+        }
+      }
+    }
+  })
+
+  res.status(200).json({ comment })
+
+}
+
 
 
 export { getVideoRoutes };
