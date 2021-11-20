@@ -4,7 +4,7 @@ import express from "express";
 
 const prisma = new PrismaClient();
 
-function getVideoRoutes() {
+const getVideoRoutes = () => {
   const router = express.Router();
 
   router.get('/', getRecommendedVideos);
@@ -28,7 +28,7 @@ const getVideoViews = async (videos) => {
   return videos;
 }
 
-async function getRecommendedVideos(req, res) {
+const getRecommendedVideos = async (req, res) => {
   let videos = await prisma.video.findMany({
     include: {
       user: true,
@@ -48,7 +48,7 @@ async function getRecommendedVideos(req, res) {
   res.status(200).json({ videos })
 }
 
-async function getTrendingVideos(req, res) {
+const getTrendingVideos = async (req, res) => {
   let videos = await prisma.video.findMany({
     include: {
       user: true,
@@ -70,9 +70,9 @@ async function getTrendingVideos(req, res) {
   res.status(200).json({ videos })
 }
 
-async function searchVideos(req, res, next) {
+const searchVideos = async (req, res, next) => {
   const searchText = req.query.query;
-  console.log('search text:', searchText)
+
   if (!searchText) {
     return next({
       message: "Please enter something to search for.",
@@ -102,8 +102,6 @@ async function searchVideos(req, res, next) {
     }
   })
 
-  console.log('search:', searchResults)
-
   if (searchResults.length === 0) {
     return res.status(200).json({ videos: [] })
   }
@@ -111,6 +109,10 @@ async function searchVideos(req, res, next) {
   const videos = await getVideoViews(searchResults);
 
   res.status(200).json({ videos })
+}
+
+const addVideo = async (req, res) => {
+
 }
 
 
