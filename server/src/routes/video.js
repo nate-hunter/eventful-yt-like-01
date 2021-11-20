@@ -115,7 +115,38 @@ const searchVideos = async (req, res, next) => {
 }
 
 const addVideo = async (req, res) => {
+  const {
+    title,
+    description,
+    url,
+    thumbnail,
+    eventDate,
+    venue,
+    location,
+    lat,
+    lon,
+  } = req.body;
 
+  const addedVideo = await prisma.video.create({
+    data: {
+      title,
+      description,
+      url,
+      thumbnail,
+      eventDate: new Date(eventDate),
+      venue,
+      location,
+      lat,
+      lon,
+      user: {
+        connect: {
+          id: req.user.id,
+        }
+      }
+    }
+  })
+
+  res.status(200).json({ video: addedVideo })
 }
 
 
