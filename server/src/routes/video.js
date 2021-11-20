@@ -8,6 +8,7 @@ function getVideoRoutes() {
   const router = express.Router();
 
   router.get('/', getRecommendedVideos);
+  router.get('/trending', getTrendingVideos);
 
   return router;
 }
@@ -45,5 +46,28 @@ async function getRecommendedVideos(req, res) {
 
   res.status(200).json({ videos })
 }
+
+async function getTrendingVideos(req, res) {
+  let videos = await prisma.video.findMany({
+    include: {
+      user: true,
+      views: true,
+    },
+    orderBy: {
+      createdAt: 'desc',
+    }
+  });
+
+  if (videos.length === 0) {
+    return res.status(200).json({ videos: [] })
+  }
+
+  videos = await getVideoViews(videos);
+  console.log('videos: ', videos)
+  videos.sort((a, b) => b.views - a.views);
+
+  res.status(200).json({ videos })
+}
+
 
 export { getVideoRoutes };
