@@ -1,7 +1,7 @@
 import logger from "loglevel";
 
 // Helps catch generic express-related errors
-function errorMiddleware(error, req, res, next) {
+const errorMiddleware = (error, req, res, next) => {
   if (res.headersSent) {
     next(error);
   } else {
@@ -17,8 +17,8 @@ function errorMiddleware(error, req, res, next) {
 }
 
 // Closes the server if there's an error so any requests do not hang
-function setupCloseOnExit(server) {
-  async function exitHandler(options = {}) {
+const setupCloseOnExit = (server) => {
+  const exitHandler = async (options = {}) => {
     await server
       .close()
       .then(() => {

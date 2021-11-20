@@ -4,9 +4,9 @@ import jwt from 'jsonwebtoken';
 
 const prisma = new PrismaClient();
 
-export async function getAuthUser(req, res, next) { }
+export const getAuthUser = async (req, res, next) => { }
 
-export async function protect(req, res, next) {
+export const protect = async (req, res, next) => {
     if (!req.headers.authorization) {
         return next({
             message: 'Please log in to access this route.',
