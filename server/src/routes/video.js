@@ -332,7 +332,7 @@ const likeVideo = async (req, res, next) => {
   } else if (isDislikedByUser) {
     await prisma.videoLike.update({
       where: {
-        id: isLikedByUser.id
+        id: isDislikedByUser.id
       },
       data: {
         like: 1,
