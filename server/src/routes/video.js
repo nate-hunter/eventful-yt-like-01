@@ -13,7 +13,8 @@ const getVideoRoutes = () => {
   router.get('/trending', getTrendingVideos);
   router.get('/search', searchVideos);
   router.post('/', protectRoute, addVideo);
-  router.post('/:videoId/comment', protectRoute, addComment);
+  router.post('/:videoId/comments', protectRoute, addComment);
+  router.delete('/:videoId/comments/:commentId', protectRoute, deleteComment);
 
   return router;
 }
@@ -37,6 +38,7 @@ const getRecommendedVideos = async (req, res) => {
     include: {
       user: true,
       views: true,
+      comments: true,
     },
     orderBy: {
       createdAt: 'desc',
@@ -182,6 +184,43 @@ const addComment = async (req, res, next) => {
   })
 
   res.status(200).json({ comment })
+}
+
+const deleteComment = async (req, res, next) => {
+  let deletedCommentId = req.params.commentId;
+
+  const deletedComment = await prisma.comment.findUnique({
+    where: {
+      id: deletedCommentId,
+    },
+    select: {
+      userId: true,
+    }
+  })
+
+  if (deletedComment.userId !== req.user.id) {
+    return next({
+      message: `You must be authorized to delete the comment with ID '${deletedCommentId}'.`,
+      statusCode: 401,
+    })
+  }
+
+  if (!deletedComment) {
+    return next({
+      message: `Comment with ID '${deletedCommentId}' not found.`,
+      statusCode: 404,
+    })
+  }
+
+  await prisma.comment.delete({
+    where: {
+      id: req.params.commentId,
+    }
+  })
+
+  res.status(200).json({ comment: deletedComment })
+
+  // console.log('comment to delete:', deletedComment)
 
 }
 
