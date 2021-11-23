@@ -14,6 +14,8 @@ const getVideoRoutes = () => {
   router.get('/search', searchVideos);
   router.post('/', protectRoute, addVideo);
   router.get('/:videoId/view', getAuthUser, addVideoView);
+  router.get('/:videoId/like', protectRoute, likeVideo);
+  router.get('/:videoId/dislike', protectRoute, dislikeVideo);
   router.post('/:videoId/comments', protectRoute, addComment);
   router.delete('/:videoId/comments/:commentId', protectRoute, deleteComment);
 
@@ -272,6 +274,183 @@ const addVideoView = async (req, res, next) => {
   })
 }
 
+const likeVideo = async (req, res, next) => {
+  const { videoId } = req.params;
+  const userId = req.user.id;
+
+  const likedVideo = await prisma.video.findUnique({
+    where: {
+      id: videoId
+    },
+  });
+
+  if (!likedVideo) {
+    return next({
+      message: `Video with id: '${videoId}' not found.`,
+      statusCode: 404,
+    })
+  }
+
+  const isLikedByUser = await prisma.videoLike.findFirst({
+    where: {
+      userId: {
+        equals: userId,
+      },
+      videoId: {
+        equals: videoId,
+      },
+      like: {
+        equals: 1,
+      }
+    }
+  });
+
+  const isDislikedByUser = await prisma.videoLike.findFirst({
+    where: {
+      userId: {
+        equals: userId,
+      },
+      videoId: {
+        equals: videoId,
+      },
+      like: {
+        equals: -1,
+      }
+    }
+  });
+
+  if (isLikedByUser) {
+    await prisma.videoLike.delete({
+      where: {
+        id: isLikedByUser.id
+      }
+    })
+    return next({
+      message: `Video '${videoId}' like has been removed.`,
+      statusCode: 200,
+    })
+  } else if (isDislikedByUser) {
+    await prisma.videoLike.update({
+      where: {
+        id: isLikedByUser.id
+      },
+      data: {
+        like: 1,
+      }
+    })
+    return next({
+      message: `Video '${videoId}' liked by user '${userId}'`,
+      statusCode: 200,
+    })
+  } else {
+    await prisma.videoLike.create({
+      data: {
+        like: 1,
+        user: {
+          connect: {
+            id: userId,
+          }
+        },
+        video: {
+          connect: {
+            id: videoId,
+          }
+        }
+      }
+    });
+  }
+
+  res.status(200).json({ 'message': `Video '${videoId}' liked by user '${userId}'` })
+}
+
+const dislikeVideo = async (req, res, next) => {
+  const { videoId } = req.params;
+  const userId = req.user.id;
+
+  const dislikedVideo = await prisma.video.findUnique({
+    where: {
+      id: videoId
+    },
+  });
+
+  if (!dislikedVideo) {
+    return next({
+      message: `Video with id: '${videoId}' not found.`,
+      statusCode: 404,
+    })
+  }
+
+  const isLikedByUser = await prisma.videoLike.findFirst({
+    where: {
+      userId: {
+        equals: userId,
+      },
+      videoId: {
+        equals: videoId,
+      },
+      like: {
+        equals: 1,
+      }
+    }
+  });
+
+  const isDislikedByUser = await prisma.videoLike.findFirst({
+    where: {
+      userId: {
+        equals: userId,
+      },
+      videoId: {
+        equals: videoId,
+      },
+      like: {
+        equals: -1,
+      }
+    }
+  });
+
+  if (isDislikedByUser) {
+    await prisma.videoLike.delete({
+      where: {
+        id: isDislikedByUser.id
+      }
+    })
+    return next({
+      message: `Video '${videoId}' dislike has been removed.`,
+      statusCode: 200,
+    })
+  } else if (isLikedByUser) {
+    await prisma.videoLike.update({
+      where: {
+        id: isLikedByUser.id
+      },
+      data: {
+        like: -1,
+      }
+    })
+    return next({
+      message: `Video '${videoId}' disliked by user '${userId}'`,
+      statusCode: 200,
+    })
+  } else {
+    await prisma.videoLike.create({
+      data: {
+        like: -1,
+        user: {
+          connect: {
+            id: userId,
+          }
+        },
+        video: {
+          connect: {
+            id: videoId,
+          }
+        }
+      }
+    });
+  }
+
+  res.status(200).json({ 'message': `Video '${videoId}' disliked by user '${userId}'` })
+}
 
 
 export { getVideoRoutes };
