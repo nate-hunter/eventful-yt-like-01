@@ -8,9 +8,11 @@ const prisma = new PrismaClient();
 const getVideoRoutes = () => {
   const router = express.Router();
   router.get('/', getRecommendedVideos);
+  router.post('/', protectRoute, addVideo);
+
   router.get('/trending', getTrendingVideos);
   router.get('/search', searchVideos);
-  router.post('/', protectRoute, addVideo);
+
   router.get('/:videoId', getAuthUser, getVideo);
   router.delete('/:videoId', protectRoute, deleteVideo);
   router.get('/:videoId/view', getAuthUser, addVideoView);
