@@ -1,7 +1,7 @@
 import { PrismaClient } from "@prisma/client";
 import express from "express";
 import { protectRoute } from "../middleware/authorization";
-import { getVideos } from "./routeHelpers";
+import { getVideos, getVideoViews } from "./routeHelpers";
 
 
 const prisma = new PrismaClient();
@@ -12,6 +12,7 @@ function getUserRoutes() {
   router.get('/liked-videos', protectRoute, getUserLikedVideos);
   router.get('/history', protectRoute, getUserHistory);
   router.get('/:userId/subscribe', protectRoute, toggleSubscribe);
+  router.get('/subscriptions', protectRoute, getFeed)
 
   return router;
 }
@@ -83,6 +84,40 @@ const toggleSubscribe = async (req, res, next) => {
   }
 
   res.status(200).json({ message: 'Subscription handled.' })
+}
+
+const getFeed = async (req, res) => {
+  const userSubscriptions = await prisma.subscription.findMany({
+    where: {
+      subscriberId: {
+        equals: req.user.id,
+      },
+    },
+  });
+
+  const subscribedToIds = userSubscriptions.map(subscr => subscr.subscribedToId);
+
+  let subscribedToVideos = await prisma.video.findMany({
+    where: {
+      userId: {
+        in: subscribedToIds,
+      },
+    },
+    include: {
+      user: true,
+    },
+    orderBy: {
+      createdAt: 'desc',
+    },
+  });
+
+  if (subscribedToVideos.length === 0) {
+    return res.status(200).json({ feed: subscribedToVideos })
+  }
+
+  subscribedToVideos = await getVideoViews(subscribedToVideos);
+
+  return res.status(200).json({ feed: subscribedToVideos })
 }
 
 export { getUserRoutes };
