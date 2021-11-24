@@ -16,7 +16,6 @@ const getAuthRoutes = () => {
   return router;
 }
 
-// All controllers/utility functions are here -- should I put these in a controllers file/folder?
 const googleLogin = async (req, res) => {
   const { username, email } = req.body;
 
