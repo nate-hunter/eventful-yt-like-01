@@ -15,3 +15,37 @@ export const getVideoViews = async (videos) => {
     }
     return videos;
 }
+
+export const getVideos = async (model, req, res) => {
+    let videos = await model.findMany({
+        where: {
+            userId: {
+                equals: req.user.id,
+            },
+        },
+        orderBy: {
+            createdAt: 'desc',
+        },
+    });
+
+    const likedVideoIds = videos.map(video => video.videoId);
+
+    videos = await prisma.video.findMany({
+        where: {
+            id: {
+                in: likedVideoIds,
+            },
+        },
+        include: {
+            user: true,
+        },
+    });
+
+    if (!videos.length === 0) {
+        return res.status(200).json({ videos });
+    }
+
+    videos = await getVideoViews(videos);
+
+    res.status(200).json({ videos });
+}
