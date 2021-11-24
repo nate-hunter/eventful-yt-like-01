@@ -1,6 +1,7 @@
 import { PrismaClient } from "@prisma/client";
 import express from "express";
 import { getAuthUser, protectRoute } from "../middleware/authorization";
+import { getVideoViews } from "./routeHelpers";
 
 
 const prisma = new PrismaClient();
@@ -21,20 +22,6 @@ const getVideoRoutes = () => {
   router.post('/:videoId/comments', protectRoute, addComment);
   router.delete('/:videoId/comments/:commentId', protectRoute, deleteComment);
   return router;
-}
-
-const getVideoViews = async (videos) => {
-  for (let video of videos) {
-    const views = await prisma.view.count({
-      where: {
-        videoId: {
-          equals: video.id,
-        },
-      },
-    });
-    video.views = views;
-  }
-  return videos;
 }
 
 const getRecommendedVideos = async (req, res) => {
