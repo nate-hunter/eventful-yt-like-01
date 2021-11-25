@@ -1,6 +1,6 @@
 import { PrismaClient } from "@prisma/client";
 import express from "express";
-import { protectRoute } from "../middleware/authorization";
+import { getAuthUser, protectRoute } from "../middleware/authorization";
 import { getVideos, getVideoViews } from "./routeHelpers";
 
 
@@ -12,7 +12,8 @@ function getUserRoutes() {
   router.get('/liked-videos', protectRoute, getUserLikedVideos);
   router.get('/history', protectRoute, getUserHistory);
   router.get('/:userId/subscribe', protectRoute, toggleSubscribe);
-  router.get('/subscriptions', protectRoute, getFeed)
+  router.get('/subscriptions', protectRoute, getSubscriptionFeed);
+  router.get('/search', getAuthUser, searchUser);
 
   return router;
 }
@@ -86,7 +87,7 @@ const toggleSubscribe = async (req, res, next) => {
   res.status(200).json({ message: 'Subscription handled.' })
 }
 
-const getFeed = async (req, res) => {
+const getSubscriptionFeed = async (req, res) => {
   const userSubscriptions = await prisma.subscription.findMany({
     where: {
       subscriberId: {
@@ -118,6 +119,74 @@ const getFeed = async (req, res) => {
   subscribedToVideos = await getVideoViews(subscribedToVideos);
 
   return res.status(200).json({ feed: subscribedToVideos })
+}
+
+const searchUser = async (req, res, next) => {
+  const searchText = req.query.query;
+
+  if (!searchText) {
+    return next({
+      message: "Please enter a username to search for.",
+      statusCode: 400,
+    });
+  }
+
+  const foundUsers = await prisma.user.findMany({
+    where: {
+      username: {
+        contains: searchText,
+        mode: 'insensitive',
+      },
+    },
+  });
+
+  if (foundUsers.length === 0) {
+    return res.status(200).json({ users: [] });
+  }
+
+  for (let user of foundUsers) {
+    const subscriberCount = await prisma.subscription.count({
+      where: {
+        subscribedToId: {
+          equals: user.id,
+        },
+      },
+    });
+
+    const videoCount = await prisma.video.count({
+      where: {
+        userId: {
+          equals: user.id,
+        },
+      },
+    });
+
+    let isCurrentUser = false;
+    let isSubscribedToUser = false;
+
+    if (req.user) {
+      isCurrentUser = req.user.id === user.id;
+      isSubscribedToUser = await prisma.subscription.findFirst({
+        where: {
+          AND: {
+            subscriberId: {
+              equals: req.user.id,
+            },
+            subscribedToId: {
+              equals: user.id,
+            },
+          },
+        },
+      });
+    }
+
+    user.subscriberCount = subscriberCount;
+    user.videoCountCount = videoCount;
+    user.isCurrentUser = !!isCurrentUser;
+    user.isSubscribedToUser = isSubscribedToUser
+  }
+
+  res.status(200).json({ users: foundUsers });
 }
 
 export { getUserRoutes };
