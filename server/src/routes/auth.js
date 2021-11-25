@@ -22,7 +22,7 @@ const googleLogin = async (req, res) => {
   let user = await prisma.user.findUnique({
     where: {
       email: email,
-    }
+    },
   });
 
   if (!user) {
@@ -30,8 +30,8 @@ const googleLogin = async (req, res) => {
       data: {
         username,
         email,
-      }
-    })
+      },
+    });
   }
 
   const tokenPayload = { id: user.id };
@@ -44,15 +44,36 @@ const googleLogin = async (req, res) => {
 }
 
 const validateMe = async (req, res) => {
-  console.log('user:', req.user)
   res.status(200).json({ user: req.user })
+  const subscriptions = await prisma.subscription.findMany({
+    where: {
+      subscriberId: {
+        equals: req.user.id,
+      },
+    },
+  });
+
+  const channelIds = subscriptions.map(subscr => subscr.subscribedToId);
+
+  await prisma.user.findMany({
+    where: {
+      id: {
+        in: channelIds,
+      },
+    },
+  });
+
+  const user = req.user;
+  user.channels = channels;
+
+  res.status(200).json({ user });
 }
 
 const signout = (req, res) => {
   res.clearCookie('token');
   res.status(200).json({
     message: 'Current user logged out.'
-  })
+  });
 }
 
 export { getAuthRoutes };
