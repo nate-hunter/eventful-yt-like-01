@@ -9,6 +9,7 @@ const prisma = new PrismaClient();
 function getUserRoutes() {
   const router = express.Router();
 
+  router.get('/', protectRoute, getRecommendedChannels)
   router.get('/liked-videos', protectRoute, getUserLikedVideos);
   router.get('/history', protectRoute, getUserHistory);
   router.get('/:userId/subscribe', protectRoute, toggleSubscribe);
@@ -17,6 +18,59 @@ function getUserRoutes() {
 
   return router;
 }
+
+const getRecommendedChannels = async (req, res) => {
+  const recommendedChannels = await prisma.user.findMany({
+    where: {
+      id: {
+        not: req.user.id,
+      },
+    },
+    take: 10,
+  });
+
+  if (recommendedChannels.length === 0) {
+    return res.status(200).json({ channels: recommendedChannels })
+  }
+
+  for (let channel of recommendedChannels) {
+    const subscriberCount = await prisma.subscription.count({
+      where: {
+        subscribedToId: {
+          equals: channel.id,
+        },
+      },
+    });
+
+    const videoCount = await prisma.video.count({
+      where: {
+        userId: {
+          equals: channel.id,
+        },
+      },
+    });
+
+    const isSubscribedToChannel = await prisma.subscription.findFirst({
+      where: {
+        AND: {
+          subscriberId: {
+            equals: req.user.id,
+          },
+          subscribedToId: {
+            equals: channel.id,
+          },
+        },
+      },
+    });
+
+    channel.subscriberCount = subscriberCount;
+    channel.videoCount = videoCount;
+    channel.isSubscribedToChannel = !!isSubscribedToChannel;
+  }
+
+  res.status(200).json({ channels: recommendedChannels });
+}
+
 
 const getUserLikedVideos = async (req, res, next) => {
   await getVideos(prisma.videoLike, req, res);
@@ -182,11 +236,13 @@ const searchUser = async (req, res, next) => {
 
     user.subscriberCount = subscriberCount;
     user.videoCountCount = videoCount;
-    user.isCurrentUser = !!isCurrentUser;
-    user.isSubscribedToUser = isSubscribedToUser
+    user.isCurrentUser = isCurrentUser;
+    user.isSubscribedToUser = !!isSubscribedToUser;
   }
 
   res.status(200).json({ users: foundUsers });
 }
+
+
 
 export { getUserRoutes };
