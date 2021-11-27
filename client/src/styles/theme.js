@@ -10,5 +10,13 @@ export const darkTheme = {
   white: "#FFF",
   pink: "#F86782",
   purple: "#282A36",
-  font: "'Urbanist', sans-serif",
+  // font: "'Urbanist', sans-serif",
+  font: "'Cutive Mono', monospace;",
+  // font: "monospace;",
 };
+
+/* Some Colors:
+#9595f9     Light Purpleish
+
+*/
+

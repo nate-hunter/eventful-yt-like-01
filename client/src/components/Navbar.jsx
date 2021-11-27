@@ -1,7 +1,7 @@
 import React from "react";
 import Wrapper from "../styles/Navbar";
 import GoogleAuth from "./GoogleAuth";
-import { AppsIcon, HamburgerIcon, LogoIcon, SettingsIcon } from "./Icons";
+import { AppsIcon, EventfulLogoIcon, HamburgerIcon, LogoIcon, SettingsIcon } from "./Icons";
 import Search from "./Search";
 
 function Navbar() {
@@ -10,9 +10,9 @@ function Navbar() {
       <div className="logo flex-row">
         <HamburgerIcon className="toggle-navhandler" />
         <span>
-          <LogoIcon
+          <EventfulLogoIcon
             style={{
-              width: 80,
+              width: 160,
               height: 24,
             }}
           />
