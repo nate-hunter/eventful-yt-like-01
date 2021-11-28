@@ -1,21 +1,25 @@
 import React from "react";
+import { NavLink } from "react-router-dom";
 import Wrapper from "../styles/Navbar";
 import GoogleAuth from "./GoogleAuth";
-import { AppsIcon, EventfulLogoIcon, HamburgerIcon, LogoIcon, SettingsIcon } from "./Icons";
+import { AppsIcon, EventfulLogoIcon, HamburgerIcon, SettingsIcon } from "./Icons";
 import Search from "./Search";
 
-function Navbar() {
+function Navbar({ toggleSideBar }) {
+
   return (
     <Wrapper>
       <div className="logo flex-row">
-        <HamburgerIcon className="toggle-navhandler" />
+        <HamburgerIcon className="toggle-navhandler" onClick={toggleSideBar} />
         <span>
-          <EventfulLogoIcon
-            style={{
-              width: 160,
-              height: 24,
-            }}
-          />
+          <NavLink to="/">
+            <EventfulLogoIcon
+              style={{
+                width: 160,
+                height: 24,
+              }}
+            />
+          </NavLink>
         </span>
       </div>
 
@@ -23,6 +27,7 @@ function Navbar() {
 
       <ul>
         <li>
+          {/* Don't need this icon... */}
           <AppsIcon />
         </li>
         <li>
