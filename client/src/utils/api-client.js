@@ -2,7 +2,7 @@ import axios from 'axios';
 
 export const client = axios.create({
     baseURL: '/api/v1'
-})
+});
 
 export const authenticate = (response) => {
     client({
@@ -16,10 +16,13 @@ export const authenticate = (response) => {
         })
         .catch(error => {
             console.error("Unsuccessful signin:", error.resp);
-        })
+        });
 }
 
-export const signoutUser = async () => { }
+export const signoutUser = async () => {
+    await client.get('/auth/signout');
+    window.location.pathname = '/';
+}
 
 export const updateUser = async () => { }
 

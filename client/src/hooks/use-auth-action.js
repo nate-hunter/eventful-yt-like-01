@@ -1,1 +1,1 @@
-export default function useAuthAction() {}
+export default const useAuthAction = () => { }

@@ -1,11 +1,16 @@
 import React from "react";
 import { NavLink } from "react-router-dom";
+import { useAuth } from "../context/auth-context";
 import Wrapper from "../styles/Navbar";
 import GoogleAuth from "./GoogleAuth";
 import { AppsIcon, EventfulLogoIcon, HamburgerIcon, SettingsIcon } from "./Icons";
 import Search from "./Search";
+import UploadVideo from "./UploadVideo";
+import UserDropdown from "./UserDropdown";
 
 function Navbar({ toggleSideBar }) {
+
+  const user = useAuth();
 
   return (
     <Wrapper>
@@ -27,15 +32,14 @@ function Navbar({ toggleSideBar }) {
 
       <ul>
         <li>
-          {/* Don't need this icon... */}
-          <AppsIcon />
+          {/* Don't need the AppsIcon icon idt... */}
+          {user ? <UploadVideo /> : <AppsIcon />}
         </li>
         <li>
-          <SettingsIcon />
+          {user ? <AppsIcon /> : <SettingsIcon />}
         </li>
         <li>
-          {" "}
-          <GoogleAuth />
+          {user ? <UserDropdown user={user} /> : <GoogleAuth />}
         </li>
       </ul>
     </Wrapper>

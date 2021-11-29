@@ -5,29 +5,29 @@ import jwt from 'jsonwebtoken';
 const prisma = new PrismaClient();
 
 export const getAuthUser = async (req, res, next) => {
-    if (!req.headers.authorization) {
+    if (!req.cookies.token) {
         req.user = null;
         return next();
     }
 
-    const token = req.headers.authorization;
+    const token = req.cookies.token;
     const decodedToken = jwt.verify(token, process.env.JWT_SECRET);
 
     const user = await prisma.user.findUnique({
         where: {
-            id: decodedToken.id
+            id: decodedToken.id,
         },
         include: {
-            videos: true
+            videos: true,
         }
-    })
+    });
 
     req.user = user;
     next();
 }
 
 export const protectRoute = async (req, res, next) => {
-    if (!req.headers.authorization) {
+    if (!req.cookies.token) {
         return next({
             message: 'Please log in to access this route.',
             statusCode: 401,
@@ -35,17 +35,17 @@ export const protectRoute = async (req, res, next) => {
     }
 
     try {
-        const token = req.headers.authorization;
+        const token = req.cookies.token;
         const decodedToken = jwt.verify(token, process.env.JWT_SECRET);
 
         const user = await prisma.user.findUnique({
             where: {
-                id: decodedToken.id
+                id: decodedToken.id,
             },
             include: {
-                videos: true
+                videos: true,
             }
-        })
+        });
 
         req.user = user;
         next();
