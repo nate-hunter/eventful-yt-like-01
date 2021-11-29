@@ -55,7 +55,6 @@ const googleLogin = async (req, res) => {
 }
 
 const validateMe = async (req, res) => {
-  res.status(200).json({ user: req.user })
   const subscriptions = await prisma.subscription.findMany({
     where: {
       subscriberId: {
@@ -66,7 +65,7 @@ const validateMe = async (req, res) => {
 
   const channelIds = subscriptions.map(subscr => subscr.subscribedToId);
 
-  await prisma.user.findMany({
+  const channels = await prisma.user.findMany({
     where: {
       id: {
         in: channelIds,
