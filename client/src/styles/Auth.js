@@ -7,9 +7,11 @@ const Button = styled.button`
   user-select: none;
   vertical-align: middle;
   text-decoration: none;
-  color: rgb(62, 166, 255);
+  /* color: rgb(62, 166, 255); */
+  /* border: 1px solid rgb(62, 166, 255); */
+  color: #95f9f9;
+  border: 1px solid #95f9f9;
   border-radius: 3px;
-  border: 1px solid rgb(62, 166, 255);
   padding: 10px 15px;
   background-color: transparent;
   font-size: 0.875rem;
@@ -20,7 +22,10 @@ const Button = styled.button`
   transition: background-color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms,
     box-shadow 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms,
     border 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
-  font-family: Roboto, Helvetica, Arial, sans-serif;
+    /* font-family: "Poppins", sans-serif; */
+    /* font-family: 'Urbanist', sans-serif; */
+    /* font-family: Roboto, Helvetica, Arial, sans-serif; */
+    font-family: "Open Sans", sans-serif;
 
   .outer {
     display: flex;

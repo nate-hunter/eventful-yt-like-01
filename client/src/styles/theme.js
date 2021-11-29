@@ -15,8 +15,31 @@ export const darkTheme = {
   // font: "monospace;",
 };
 
-/* Some Colors:
-#9595f9     Light Purpleish
+/*
+Color Pallette [1]:  Using The Sessions College Color Calculator
+  #9595f9     Purple (Main)
+  #f9c795     Tan (Complimentary)
+  #5a5ae0     Dk Blue (Monochromatic)
+  #c795f9     Violet (Analogous)
+  #95f9f9     Blue (Analogous)
+  #f9e095     Darker Yellow (Split Complimentary)
+  #f9ae95     Salmon-pastel-like (Split Complimentary)
+  #f9f995     Yellow (Triadic)
+  #f99595     Salmon-pastel-like (Triadic)
+  #f995f9     Brighter Violet (Tetradic)
 
+Color Pallette [2]: Using the recommended palette from 'looka'
+  #9595f9     Purple (Main)
+  #ffffff     White
+  #000000     Black
+  #c5c5fc     Soft purple
+  #6565f6     Slightly brighter purple
+  #e6e6e6     Bonish-white
+
+Some Fonts:
+  font-family: "Poppins", sans-serif;
+  font-family: 'Urbanist', sans-serif;
+  font-family: Roboto, Helvetica, Arial, sans-serif;
+  font-family: "Open Sans", sans-serif;
 */
 
