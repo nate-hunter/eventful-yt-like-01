@@ -8,7 +8,6 @@ const AuthContext = createContext(null);
 export const AuthProvider = ({ children }) => {
     const { data } = useQuery('AuthProvider', () => client.get('/auth/me')
         .then(resp => resp.data.user)
-
     );
 
     const user = data || null;
