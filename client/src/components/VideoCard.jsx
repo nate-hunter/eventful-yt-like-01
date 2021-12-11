@@ -1,38 +1,45 @@
+import { id } from "date-fns/locale";
 import React from "react";
+import { Link } from "react-router-dom";
 import Avatar from "../styles/Avatar";
 import Wrapper from "../styles/VideoCard";
+import { formatCreatedAt } from "../utils/date";
 import DeleteVideoDropdown from "./DeleteVideoDropdown";
 
-function VideoCard() {
+const VideoCard = ({ video }) => {
+  const { id, thumbnail, title, user, views, createdAt } = video;
+
+  console.log('video:', video);
+
   return (
     <Wrapper>
-      <span>
+      <Link to={`/watch/${id}`}>
         <img
           className="thumb"
-          src="https://dummyimage.com/1280x720"
-          alt="thumbnail"
+          src={thumbnail}
+          alt={title}
         />
-      </span>
+      </Link>
       <div className="video-info-container">
         <div className="channel-avatar">
           <Avatar
             style={{ marginRight: "0.8rem" }}
-            src="https://dummyimage.com/100x100"
-            alt="channel avatar"
+            src={user.avatar}
+            alt={`${user.username}'s avatar`}
           />
         </div>
         <div className="video-info">
+          <Link to={`/watch/${id}`}>
+            <h4 className="truncate">{title}</h4>
+          </Link>
           <span>
-            <h4 className="truncate">Title</h4>
-          </span>
-          <span>
-            <span className="secondary">Username</span>
+            <span className="secondary">{user.username}</span>
           </span>
           <p className="secondary leading-4">
-            <span>Views views</span> <span>•</span> <span>CreatedAt</span>
+            <span>{views} views</span> <span>•</span> <span>{formatCreatedAt(createdAt)}</span>
           </p>
         </div>
-        <DeleteVideoDropdown />
+        <DeleteVideoDropdown video={video} />
       </div>
     </Wrapper>
   );
