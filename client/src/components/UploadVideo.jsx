@@ -1,7 +1,21 @@
 import React from "react";
+import { uploadMedia } from "../utils/upload-media";
 import { UploadIcon } from "./Icons";
 
-function UploadVideo() {
+const UploadVideo = () => {
+
+  const handleVideoUpload = async (e) => {
+    const file = e.target.files[0];
+
+    if (file) {
+      const url = await uploadMedia({
+        type: "video",
+        file,
+        preset: "eventful"
+      });
+    }
+  }
+
   return (
     <div>
       <label htmlFor="video-upload">
@@ -12,6 +26,7 @@ function UploadVideo() {
         id="video-upload"
         type="file"
         accept="video/*"
+        onChange={handleVideoUpload}
       />
     </div>
   );
