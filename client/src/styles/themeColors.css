@@ -1,0 +1,43 @@
+.color-pallette-1 {
+  color: #9595f9;
+  color: #5a5ae0;
+  color: #c795f9;
+  color: #f995f9;
+  color: #95f9f9;
+  color: #f9e095;
+  color: #f9f995;
+  color: #f9c795;
+  color: #f9ae95;
+  color: #f99595;
+}
+
+.color-pallette-2 {
+  color: #9595f9;
+  color: #ffffff;
+  color: #000000;
+  color: #c5c5fc;
+  color: #6565f6;
+  color: #e6e6e6;
+}
+
+/*
+Color Pallette [1]:  Using The Sessions College Color Calculator
+  #9595f9     Purple (Main)
+  #f9c795     Tan (Complimentary)
+  #5a5ae0     Dk Blue (Monochromatic)
+  #c795f9     Violet (Analogous)
+  #95f9f9     Blue (Analogous)
+  #f9e095     Darker Yellow (Split Complimentary)
+  #f9ae95     Salmon-pastel-like (Split Complimentary)
+  #f9f995     Yellow (Triadic)
+  #f99595     Salmon-pastel-like (Triadic)
+  #f995f9     Brighter Violet (Tetradic)
+
+Color Pallette [2]: Using the recommended palette from 'looka'
+  #9595f9     Purple (Main)
+  #ffffff     White
+  #000000     Black
+  #c5c5fc     Soft purple
+  #6565f6     Slightly brighter purple
+  #e6e6e6     Bonish-white
+*/
