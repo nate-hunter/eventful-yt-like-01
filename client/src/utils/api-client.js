@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { queryCache } from 'react-query';
 
 export const client = axios.create({
     baseURL: '/api/v1'
@@ -30,7 +31,10 @@ export const addVideoView = async () => { }
 
 export const addComment = async () => { }
 
-export const addVideo = async () => { }
+export const addVideo = async (video) => {
+    await client.post('/videos', video);
+    await queryCache.invalidateQueries('Channel');
+}
 
 export const toggleSubscribeUser = async () => { }
 
