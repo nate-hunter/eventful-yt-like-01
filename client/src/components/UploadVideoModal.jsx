@@ -10,7 +10,7 @@ import { CloseIcon } from "./Icons";
 import VideoPlayer from "./VideoPlayer";
 
 const UploadVideoModal = ({ preview, defaultTitle, url, thumbnail, closeModal }) => {
-  console.log('in `upload video modal`:  preview:', preview, ' / defaultTitle:', defaultTitle, ' / url:', url, ' / thumbnail:', thumbnail)
+  // console.log('in `upload video modal`:  preview:', preview, ' / defaultTitle:', defaultTitle, ' / url:', url, ' / thumbnail:', thumbnail);
 
   const user = useAuth();
   const [tab, setTab] = useState('PREVIEW');

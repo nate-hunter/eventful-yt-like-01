@@ -42,7 +42,7 @@ const UploadVideo = () => {
       setShowModal(true);
 
       const previewVideo = URL.createObjectURL(file);
-      console.log('preview video:', previewVideo);
+      // console.log('preview video:', previewVideo);
       setPreview(previewVideo);
 
       const url = await uploadMedia({

@@ -9,7 +9,7 @@ import DeleteVideoDropdown from "./DeleteVideoDropdown";
 const VideoCard = ({ video }) => {
   const { id, thumbnail, title, user, views, createdAt } = video;
 
-  console.log('video:', video);
+  // console.log('video:', video);
 
   return (
     <Wrapper>

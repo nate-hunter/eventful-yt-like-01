@@ -6,10 +6,10 @@ import { useEffect } from "react";
 
 
 const VideoPlayer = ({ preview, url }) => {
-  console.log(`
-    / preview: ${preview}
-    / url: ${url}
-  `)
+  // console.log(`
+  //   / preview: ${preview}
+  //   / url: ${url}
+  // `)
 
   const videoRef = useRef();
 
