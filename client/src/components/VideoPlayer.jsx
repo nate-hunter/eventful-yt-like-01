@@ -3,29 +3,40 @@ import "video.js/dist/video-js.css";
 import videojs from "video.js";
 import { useRef } from "react";
 import { useEffect } from "react";
+import { addVideoView } from "../utils/api-client";
 
 
-const VideoPlayer = ({ preview, url }) => {
+const VideoPlayer = ({ preview, video }) => {
   // console.log(`
   //   / preview: ${preview}
-  //   / url: ${url}
+  //   / video: ${video}
   // `)
 
   const videoRef = useRef();
+  const { id, url, thumbnail } = video;
 
   useEffect(() => {
     const vjsPlayer = videojs(videoRef.current);
 
+    if (!preview) {
+      vjsPlayer.poster(thumbnail)
+      vjsPlayer.src(url)
+    }
+
     if (preview) {
       vjsPlayer.src({ type: 'video/mp4', src: preview });
     }
+
+    vjsPlayer.on('ended', () => {
+      addVideoView(id);
+    });
 
     return () => {
       if (vjsPlayer) {
         vjsPlayer.dispose();
       }
     }
-  }, [preview]);
+  }, [preview, id, url, thumbnail]);
 
   return (
     <div data-vjs-player>
