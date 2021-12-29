@@ -6,10 +6,8 @@ import Wrapper from "../styles/VideoCard";
 import { formatCreatedAt } from "../utils/date";
 import DeleteVideoDropdown from "./DeleteVideoDropdown";
 
-const VideoCard = ({ video }) => {
+const VideoCard = ({ video, hideAvatar }) => {
   const { id, thumbnail, title, user, views, createdAt } = video;
-
-  // console.log('video:', video);
 
   return (
     <Wrapper>
@@ -22,11 +20,11 @@ const VideoCard = ({ video }) => {
       </Link>
       <div className="video-info-container">
         <div className="channel-avatar">
-          <Avatar
+          {!hideAvatar && <Avatar
             style={{ marginRight: "0.8rem" }}
             src={user.avatar}
             alt={`${user.username}'s avatar`}
-          />
+          />}
         </div>
         <div className="video-info">
           <Link to={`/watch/${id}`}>

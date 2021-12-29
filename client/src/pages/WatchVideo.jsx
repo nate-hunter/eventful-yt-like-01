@@ -5,6 +5,7 @@ import { useParams } from "react-router-dom";
 import AddComment from "../components/AddComment";
 import { DislikeIcon, LikeIcon } from "../components/Icons";
 import NoResults from "../components/NoResults";
+import VideoCard from "../components/VideoCard";
 import VideoPlayer from "../components/VideoPlayer";
 import Skeleton from "../skeletons/WatchVideoSkeleton";
 import Button from "../styles/Button";
@@ -13,16 +14,16 @@ import { client } from "../utils/api-client";
 import { formatCreatedAt } from '../utils/date.js';
 
 
-function WatchVideo() {
+const WatchVideo = () => {
   const { videoId } = useParams();
-  const { data: video, isLoading } = useQuery(['WatchVideo', videoId], () => client.get(`/videos/${videoId}`).then(resp => resp.data.video));
-  console.log('video in skeleton:', video)
+  const { data: video, isLoading: isLoadingVideo } = useQuery(['WatchVideo', videoId], () => client.get(`/videos/${videoId}`).then(resp => resp.data.video));
+  const { data: nextVideos, isLoading: isLoadingNextVideos } = useQuery(['WatchVideo', 'UpNext'], () => client.get(`/videos`).then(resp => resp.data.videos))
 
-  if (isLoading) {
+  if (isLoadingVideo || isLoadingNextVideos) {
     return <Skeleton />
   }
 
-  if (!isLoading && !video) {
+  if (!isLoadingVideo && !video) {
     return (
       <NoResults
         title="Page not found"
@@ -35,7 +36,7 @@ function WatchVideo() {
     <Wrapper filledLike={video && video.isLiked} filledDislike={video && video.isDisLiked}>
       <div className="video-container">
         <div className="video">
-          {!isLoading && <VideoPlayer video={video} />}
+          {!isLoadingVideo && <VideoPlayer video={video} />}
         </div>
 
         <div className="video-info">
@@ -87,7 +88,9 @@ function WatchVideo() {
 
       <div className="related-videos">
         <h3 className="up-next">Up Next</h3>
-        Up Next Videos
+        {nextVideos.filter(nextVideo => nextVideo.id !== video.id).slice(0, 10).map(video => (
+          <VideoCard key={video.id} video={video} hideAvatar />
+        ))}
       </div>
     </Wrapper>
   );
