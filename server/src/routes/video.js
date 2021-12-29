@@ -347,6 +347,8 @@ const likeVideo = async (req, res, next) => {
     });
   }
 
+  console.log('is liked by user:', isLikedByUser)
+
   res.status(200).json({ 'message': `Video '${videoId}' liked by user '${userId}'` })
 }
 
@@ -435,6 +437,8 @@ const dislikeVideo = async (req, res, next) => {
       },
     });
   }
+
+  console.log('is disliked by user:', dislikedVideo)
 
   res.status(200).json({ 'message': `Video '${videoId}' disliked by user '${userId}'` });
 }
@@ -547,7 +551,7 @@ const getVideo = async (req, res, next) => {
             equals: videoId,
           },
           like: {
-            equals: 1,
+            equals: -1,
           },
         },
       },
