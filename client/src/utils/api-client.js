@@ -41,9 +41,16 @@ export const addVideo = async (video) => {
 
 export const toggleSubscribeUser = async () => { }
 
-export const likeVideo = async () => { }
+export const likeVideo = async (videoId) => {
+    await client.get(`/videos/${videoId}/like`);
+    await queryCache.invalidateQueries(['WatchVideo', videoId]);
+}
 
-export const dislikeVideo = async () => { }
+export const dislikeVideo = async (videoId) => {
+    await client.get(`/videos/${videoId}/dislike`);
+    console.log('dislike video', videoId)
+    await queryCache.invalidateQueries(['WatchVideo', videoId]);
+}
 
 export const deleteVideo = async () => { }
 

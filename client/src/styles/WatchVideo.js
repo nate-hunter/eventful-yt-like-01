@@ -64,7 +64,7 @@ const Wrapper = styled.div`
     margin-bottom: 1rem;
   }
 
-  related-videos h3 {
+  .related-videos h3 {
     margin-bottom: 1rem;
   }
 

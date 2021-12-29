@@ -10,7 +10,7 @@ import VideoPlayer from "../components/VideoPlayer";
 import Skeleton from "../skeletons/WatchVideoSkeleton";
 import Button from "../styles/Button";
 import Wrapper from "../styles/WatchVideo";
-import { client } from "../utils/api-client";
+import { client, dislikeVideo, likeVideo } from "../utils/api-client";
 import { formatCreatedAt } from '../utils/date.js';
 
 
@@ -32,6 +32,19 @@ const WatchVideo = () => {
     );
   }
 
+  const handleLikeVideo = (videoId) => {
+    likeVideo(videoId);
+  }
+
+  const handleDislikeVideo = (videoId) => {
+    console.log('watch video before:', video)
+
+    // console.log(videoId)
+    dislikeVideo(videoId);
+    console.log('watch video after:', video)
+
+  }
+
   return (
     <Wrapper filledLike={video && video.isLiked} filledDislike={video && video.isDisLiked}>
       <div className="video-container">
@@ -50,10 +63,10 @@ const WatchVideo = () => {
 
             <div className="likes-dislikes flex-row">
               <p className="flex-row like">
-                <LikeIcon /> <span>{video.likesCount}</span>
+                <LikeIcon onClick={() => handleLikeVideo(video.id)} /> <span>{video.likesCount}</span>
               </p>
               <p className="flex-row dislike" style={{ marginLeft: "1rem" }}>
-                <DislikeIcon /> <span>{video.dislikesCount}</span>
+                <DislikeIcon onClick={() => handleDislikeVideo(video.id)} /> <span>{video.dislikesCount}</span>
               </p>
             </div>
           </div>
